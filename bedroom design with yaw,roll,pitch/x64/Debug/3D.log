@@ -1,0 +1,27 @@
+﻿  glad.c
+  main.cpp
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\camera.h(104,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\camera.h(106,24): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\camera.h(108,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\camera.h(110,26): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\camera.h(112,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\camera.h(114,25): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2135,74): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2136,74): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2137,74): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2138,74): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2139,74): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2140,74): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2141,70): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2142,70): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2143,70): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2144,70): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2145,70): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2146,70): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2172,21): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2177,21): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2182,21): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2187,21): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2192,21): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\main.cpp(2197,21): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  3D.vcxproj -> E:\Computer-Graphics\bedroom design with yaw,roll,pitch\x64\Debug\3D.exe

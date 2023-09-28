@@ -1,0 +1,3 @@
+C:\Users\Nazirul Hasan\Desktop\3D\x64\Debug\3D.exe
+C:\Users\Asus\Downloads\3D-20230919T084647Z-001\3D\x64\Debug\3D.exe
+E:\Computer-Graphics\bedroom design with yaw,roll,pitch\x64\Debug\3D.exe
