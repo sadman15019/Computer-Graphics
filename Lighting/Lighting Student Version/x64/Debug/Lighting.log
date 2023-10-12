@@ -1,0 +1,100 @@
+﻿  main.cpp
+E:\Computer-Graphics\Lighting\Lighting Student Version\camera.h(104,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\camera.h(106,25): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\camera.h(108,27): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\camera.h(110,27): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\camera.h(112,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\camera.h(114,26): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\sphere.h(180,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\sphere.h(181,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\sphere.h(183,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(491,66): warning C4101: 'rotateY2Matrix': unreferenced local variable
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(720,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(723,23): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(724,24): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(725,24): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(726,25): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(727,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(737,60): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(737,53): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(737,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(748,60): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(748,53): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(748,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(759,49): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(770,49): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(781,60): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(781,53): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(781,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(792,60): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(792,53): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(792,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(814,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(814,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(814,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(829,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(829,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(829,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(842,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(842,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(842,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(855,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(855,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(855,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(868,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(868,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(868,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(881,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(881,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(881,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(895,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(895,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(895,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(907,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(907,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(907,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(927,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(927,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(927,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(939,49): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(952,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(952,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(952,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(964,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(964,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(964,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(977,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(977,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(977,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(992,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(992,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(992,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1012,62): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1012,54): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1012,46): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1076,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1077,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1068,26): warning C4101: 'rotateXMatrix': unreferenced local variable
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1068,19): warning C4101: 'model': unreferenced local variable
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1068,56): warning C4101: 'rotateZMatrix': unreferenced local variable
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1068,41): warning C4101: 'rotateYMatrix': unreferenced local variable
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1178,47): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1179,52): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1180,34): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1184,75): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1185,75): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1186,75): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1187,75): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1188,75): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1189,75): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1226,71): warning C4305: '-=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1230,29): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1237,29): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1244,29): warning C4305: '+=': truncation from 'double' to 'float'
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1252,21): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1257,21): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1262,21): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1267,21): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1272,21): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Computer-Graphics\Lighting\Lighting Student Version\main.cpp(1277,21): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  Lighting.vcxproj -> E:\Computer-Graphics\Lighting\Lighting Student Version\x64\Debug\Lighting.exe

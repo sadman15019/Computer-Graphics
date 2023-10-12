@@ -101,17 +101,17 @@ public:
         if (direction == DOWN)
             Position -= Up * velocity;
         if (direction == YAW_R)
-            Yaw += 3.6 * velocity;
+            Yaw += 20.0 * velocity;
         if (direction == YAW_L)
-            Yaw -= 3.6 * velocity;
+            Yaw -= 20.0 * velocity;
         if (direction == PITCH_U)
-            Pitch += 3.6 * velocity;
+            Pitch += 20.0 * velocity;
         if (direction == PITCH_D)
-            Pitch -= 3.6 * velocity;
+            Pitch -= 20.0 * velocity;
         if (direction == ROLL_F)
-            Roll += 3.6 * velocity;
+            Roll += 20.0 * velocity;
         if (direction == ROLL_B)
-            Roll -= 3.6 * velocity;
+            Roll -= 20.0 * velocity;
 
         updateCameraVectors();
     }

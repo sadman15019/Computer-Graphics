@@ -15,6 +15,7 @@
 #include "shader.h"
 #include "camera.h"
 #include "basic_camera.h"
+#include "pointLight.h"
 
 #include <iostream>
 
@@ -61,6 +62,64 @@ BasicCamera basic_camera(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, V);
 float deltaTime = 0.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
 
+
+// positions of the point lights
+glm::vec3 pointLightPositions[] = {
+    glm::vec3(1.50f,  1.50f,  0.0f),
+    glm::vec3(1.5f,  -1.5f,  0.0f)
+};
+
+
+//glm::vec3(-0.5, 1, -0.5)
+
+
+PointLight pointlight1(
+
+    pointLightPositions[0].x, pointLightPositions[0].y, pointLightPositions[0].z,  // position
+    0.05f, 0.05f, 0.05f,     // ambient
+    1.0f, 1.0f, 1.0f,     // diffuse
+    1.0f, 1.0f, 1.0f,        // specular
+    1.0f,   //k_c
+    0.09f,  //k_l
+    0.032f, //k_q
+    1       // light number
+);
+PointLight pointlight2(
+
+    pointLightPositions[1].x, pointLightPositions[1].y, pointLightPositions[1].z,  // position
+    0.05f, 0.05f, 0.05f,     // ambient
+    1.0f, 1.0f, 1.0f,     // diffuse
+    1.0f, 1.0f, 1.0f,        // specular
+    1.0f,   //k_c
+    0.09f,  //k_l
+    0.032f, //k_q
+    2       // light number
+);
+
+// light settings
+bool pointLightOn = true;
+bool ambientToggle = true;
+bool diffuseToggle = true;
+bool specularToggle = true;
+
+void drawCube(unsigned int& cubeVAO, Shader& lightingShader, glm::mat4 model = glm::mat4(1.0f), float r = 1.0f, float g = 1.0f, float b = 1.0f)
+{
+    lightingShader.use();
+
+    lightingShader.setVec3("material.ambient", glm::vec3(r, g, b));
+    lightingShader.setVec3("material.diffuse", glm::vec3(r, g, b));
+    lightingShader.setVec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    lightingShader.setVec3("material.emmisive", glm::vec3(r * 0.1, g * 0.1, b * 0.0));
+    lightingShader.setFloat("material.shininess", 32.0f);
+
+    lightingShader.setMat4("model", model);
+
+    glBindVertexArray(cubeVAO);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+}
+
+
+
 int main()
 {
     // glfw: initialize and configure
@@ -105,7 +164,9 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader ourShader("vertexShader.vs", "fragmentShader.fs");
+
+    Shader lightingShader("vertexShaderForGouraudShading.vs", "fragmentShaderForGouraudShading.fs");
+    //Shader lightingShader("vertexShader.vs", "fragmentShader.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -1075,7 +1136,7 @@ int main()
 
 
 
-    //ourShader.use();
+    //lightingShader.use();
 
     // render loop
     // -----------
@@ -1101,17 +1162,22 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-        ourShader.use();
+        lightingShader.use();
 
         // pass projection matrix to shader (note that in this case it could change every frame)
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         //glm::mat4 projection = glm::ortho(-2.0f, +2.0f, -1.5f, +1.5f, 0.1f, 100.0f);
-        ourShader.setMat4("projection", projection);
+        lightingShader.setMat4("projection", projection);
 
         // camera/view transformation
         glm::mat4 view = camera.GetViewMatrix();
         //glm::mat4 view = basic_camera.createViewMatrix();
-        ourShader.setMat4("view", view);
+        lightingShader.setMat4("view", view);
+
+        // point light 1
+        pointlight1.setUpPointLight(lightingShader);
+        // point light 2
+        pointlight2.setUpPointLight(lightingShader);
 
         //chair start
 
@@ -1127,10 +1193,11 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(scale_X, 0.25f, scale_Z));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
-        glBindVertexArray(VAO7);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        drawCube(VAO7, lightingShader, model, 1, 0.647, 0);
+        //glBindVertexArray(VAO7);
+        //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
         //paya start
@@ -1143,7 +1210,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 0.7f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO7);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1158,7 +1225,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 0.7f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO7);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1173,7 +1240,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 0.7f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO7);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1188,7 +1255,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 0.7f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO7);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1203,7 +1270,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.0f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO7);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1219,7 +1286,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.0f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO7);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1233,7 +1300,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.0f, 0.25f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO7);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1250,8 +1317,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, 1.2f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO5);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1264,8 +1331,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, -0.05f, 1.2f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO1);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1279,7 +1346,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.1f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO5);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1293,7 +1360,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.1f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO5);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1308,7 +1375,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.1f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO5);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1325,7 +1392,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.1f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO5);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1343,8 +1410,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, 4.0f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO2);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1357,8 +1424,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, 4.0f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1370,7 +1437,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.0f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1384,7 +1451,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.0f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1399,7 +1466,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.0f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1413,7 +1480,7 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.25f, 1.0f, 0.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
 
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1425,8 +1492,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 1.2f, 0.125f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1443,8 +1510,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.8f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1456,8 +1523,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.8f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1469,8 +1536,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.8f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1483,8 +1550,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.8f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1497,8 +1564,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.8f, 0.1f, 1.3f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1512,8 +1579,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.8f, 0.1f, 1.26f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1527,8 +1594,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.8f, 0.1f, 1.25f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1541,8 +1608,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.6f, 0.1f, 2.75f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1558,8 +1625,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.5f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1572,8 +1639,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.5f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1586,8 +1653,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.5f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1600,8 +1667,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.5f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1613,8 +1680,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.9f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1626,8 +1693,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.9f, 0.1f, 1.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1640,8 +1707,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.4f, 0.1f, 0.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1653,8 +1720,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.4f, 0.1f, 0.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1667,8 +1734,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.4f, 0.1f, 0.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1685,25 +1752,25 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(10.8f, 0.1f, 10.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO11);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
         //chhaad
-        /*
-        translateMatrix = glm::translate(identityMatrix, glm::vec3(-5.0f, 4.0f, -1.5f + 0.3f));
+        
+        translateMatrix = glm::translate(identityMatrix, glm::vec3(-5.0f, 5.0f, -1.5f + 0.3f));
         rotateXMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         rotateYMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(10.8f, 0.1f, 12.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO11);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-        */
+        
 
 
         //wall
@@ -1716,8 +1783,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(10.8f, 0.1f, 12.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO8);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1732,8 +1799,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(12.8f, 0.1f, 10.5f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO10);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1747,8 +1814,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.7f, -0.05f, 0.7f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO9);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1761,8 +1828,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.0f, 0.1f, 1.0f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO9);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1772,8 +1839,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.0f, 0.01f, 1.0f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO12);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1788,8 +1855,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, scale_Z));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1801,8 +1868,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, scale_Z));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1816,8 +1883,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, scale_Z));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1830,8 +1897,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, scale_Z));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO4);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1841,8 +1908,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, scale_Z));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1856,8 +1923,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.0f, 0.25f, 1.3f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1867,8 +1934,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.9f, 0.05f, 1.2f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO12);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1879,8 +1946,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.25f, 0.25f, scale_Z));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1890,8 +1957,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.25f, 0.25f, scale_Z));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1911,8 +1978,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.65f, 0.25f, 0.65f));
         model = translateMatrix * tinvMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * tMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1926,8 +1993,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.325f, 0.25f, 0.65 * 3.0f));
         model = translateMatrix * tinvMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * tMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1942,8 +2009,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.325f, 0.25f, 0.65 * 3.0f));
         model = translateMatrix * tinvMatrix * rotateXMatrix * rotateY2Matrix * rotateYMatrix * rotateZMatrix * tMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1955,8 +2022,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 1.2f, 0.1f));
         model = translateMatrix * tinvMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * tMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO3);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1980,8 +2047,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.65f, 0.25f, 0.65f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO6);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -1993,8 +2060,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 1.0f, 0.1f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO6);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -2004,8 +2071,8 @@ int main()
         rotateZMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.65f, 1.0f, 0.65f));
         model = translateMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix * scaleMatrix;
-        ourShader.setMat4("model", model);
-        //ourShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
+        lightingShader.setMat4("model", model);
+        //lightingShader.setVec3("aColor", glm::vec3(0.2f, 0.1f, 0.4f));
         glBindVertexArray(VAO1);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         
@@ -2014,7 +2081,23 @@ int main()
 
 
 
+        // also draw the lamp object(s)
+        lightingShader.use();
+        lightingShader.setMat4("projection", projection);
+        lightingShader.setMat4("view", view);
 
+        // we now draw as many light bulbs as we have point lights.
+        glBindVertexArray(VAO3);
+        for (unsigned int i = 0; i < 2; i++)
+        {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, pointLightPositions[i]);
+            model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+            lightingShader.setMat4("model", model);
+            lightingShader.setVec3("color", glm::vec3(0.8f, 0.8f, 0.8f));
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+            //glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
 
 
@@ -2031,7 +2114,7 @@ int main()
         //    model = glm::translate(model, cubePositions[i]);
         //    float angle = 20.0f * i;
         //    model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-        //    ourShader.setMat4("model", model);
+        //    lightingShader.setMat4("model", model);
 
         //    glDrawArrays(GL_TRIANGLES, 0, 36);
         //}
